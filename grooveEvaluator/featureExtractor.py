@@ -11,7 +11,7 @@ from sklearn.neighbors import KernelDensity
 def get_features_dict(hvo_dataset, features_to_extract, use_tqdm=False) -> Dict[str, np.ndarray]:
     """
     TODO: Docstring
-    TODO: Test me
+    TODO: Use tqdm
     """
     extracted_features = {}
     for feat in features_to_extract:
@@ -29,22 +29,24 @@ def get_features_dict(hvo_dataset, features_to_extract, use_tqdm=False) -> Dict[
 
     return extracted_features
 
-def get_intraset_dd_dict(extracted_features: Dict[str, np.ndarray]) -> Dict[str, DistanceData]:
+def get_intraset_dd_dict(extracted_features: Dict[str, np.ndarray], use_tqdm=True) -> Dict[str, DistanceData]:
     """
     TODO: Docstring
-    TODO: Test me
+    TODO: Use tqdm
+    TODO: Should we care about symmetricality of intraset distance matrices?
     """
     intraset_dd_dict = {}
     for feat_name, feat_values in extracted_features.items():
         distance_matirx = utils.get_intraset_distance_matrix(feat_values)
-        intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=True)
+        # intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=True)
+        intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=False)
     
     return intraset_dd_dict
 
 def get_interset_dd_dict(extracted_features_a: Dict[str, np.ndarray], extracted_features_b: Dict[str, np.ndarray]) -> Dict[str, DistanceData]:
     """
     TODO: Docstring
-    TODO: Test me
+    TODO: Use tqdm
     """
 
     if extracted_features_a.keys() != extracted_features_b.keys():
@@ -91,5 +93,3 @@ def __get_eval_hvo_features(hvo_sequence: HVO_Sequence):
     }
 
     return features
-
-

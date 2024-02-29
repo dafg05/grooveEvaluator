@@ -51,6 +51,7 @@ def overlapping_area(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndar
 
     TODO: Test me properly
     TODO: Cite me properly
+    TODO: Is this too numerically unstable?
     """
 
     reshaped_points = points.reshape(-1, 1)

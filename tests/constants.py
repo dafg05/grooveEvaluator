@@ -14,15 +14,8 @@ DEFAULT_FILTERS = {
     "full_audio_filename": None  # list_of full_audio_filename
 }
 
-ROCK_FILTERS = {
-    "drummer": None,
-    "session": None,
-    "loop_id": None,
-    "master_id": None,
-    "style_primary": ["rock"],
-    "bpm": None,
-    "beat_type": ["beat"],
-    "time_signature": ["4-4"],
-    "full_midi_filename": None,
-    "full_audio_filename": None
-}
+ROCK_FILTERS = DEFAULT_FILTERS.copy()
+ROCK_FILTERS["style_primary"] = ["rock"]
+
+AFROBEAT_FILTERS = DEFAULT_FILTERS.copy()
+AFROBEAT_FILTERS["style_primary"] = ["afrobeat"]

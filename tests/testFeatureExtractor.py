@@ -1,4 +1,4 @@
-import grooveEvaluator.featureExtractor as fe
+import grooveEvaluator.featureExtractor as featExt
 from tests.constants import *
 from tests.dataset import GrooveMidiDataset
 import grooveEvaluator.constants as ge_constants
@@ -17,10 +17,9 @@ EXTRACTED_FEATURES_B = {
 }
 
 def test_get_features_dict():
-    extracted_features = fe.get_features_dict(HVO_DATASET, features_to_extract=ge_constants.EVAL_FEATURES)
+    extracted_features = featExt.get_features_dict(HVO_DATASET, features_to_extract=ge_constants.EVAL_FEATURES)
 
     assert len(extracted_features) == len(ge_constants.EVAL_FEATURES)
-    n = 0
     for feat in ge_constants.EVAL_FEATURES:
         assert feat in extracted_features.keys()
         assert len(extracted_features[feat]) == len(HVO_DATASET)
@@ -28,7 +27,7 @@ def test_get_features_dict():
     print("test_get_features_dict passed")
 
 def test_get_intraset_dd_dict():
-    intraset_dd_dict = fe.get_intraset_dd_dict(EXTRACTED_FEATURES_A)
+    intraset_dd_dict = featExt.get_intraset_dd_dict(EXTRACTED_FEATURES_A)
     assert len(intraset_dd_dict) == len(EXTRACTED_FEATURES_A)
     for feat in intraset_dd_dict.keys():
         assert feat in intraset_dd_dict.keys()
@@ -38,7 +37,7 @@ def test_get_intraset_dd_dict():
     print("get_intraset_dd_dict passed")
 
 def test_get_interset_dd_dict():
-    interset_dd_dict = fe.get_interset_dd_dict(EXTRACTED_FEATURES_A, EXTRACTED_FEATURES_B)
+    interset_dd_dict = featExt.get_interset_dd_dict(EXTRACTED_FEATURES_A, EXTRACTED_FEATURES_B)
     assert len(interset_dd_dict) == len(EXTRACTED_FEATURES_B)
     for feat in interset_dd_dict.keys():
         assert feat in interset_dd_dict.keys()

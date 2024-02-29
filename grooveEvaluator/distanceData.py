@@ -4,6 +4,7 @@ import numpy as np
 class DistanceData:
     """
     TODO: Docstring
+    TODO: Might need to get rid of the whole is_intraset thing, even though there is redundant data.
     """
     def __init__(self, distance_matrix, is_intraset):
         self.distance_matrix = distance_matrix
