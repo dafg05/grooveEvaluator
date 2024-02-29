@@ -3,7 +3,6 @@ import numpy as np
 
 class DistanceData:
     """
-    TODO: test me
     TODO: Docstring
     """
     def __init__(self, distance_matrix, is_intraset):
