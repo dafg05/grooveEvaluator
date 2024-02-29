@@ -9,6 +9,7 @@ class DistanceData:
     def __init__(self, distance_matrix, is_intraset):
         self.distance_matrix = distance_matrix
         self.is_intraset = is_intraset
+        # TODO: if is_intraset, check if distance_matrix is symmetrical
         self.flattened_distances = self.__flattened_relevant_distances()
         self.kde = self.__kde_from_distances()
     
