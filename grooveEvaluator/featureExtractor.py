@@ -31,21 +31,21 @@ def get_features_dict(hvo_dataset, features_to_extract, use_tqdm=False) -> Dict[
 
 def get_intraset_dd_dict(extracted_features: Dict[str, np.ndarray], use_tqdm=True) -> Dict[str, DistanceData]:
     """
-    TODO: Docstring
+    Calculates the intraset distance matrix for each feature in the extracted_features dictionary.
+
     TODO: Use tqdm
-    TODO: Should we care about symmetricality of intraset distance matrices?
     """
     intraset_dd_dict = {}
     for feat_name, feat_values in extracted_features.items():
         distance_matirx = utils.get_intraset_distance_matrix(feat_values)
-        # intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=True)
-        intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=False)
+        intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=True)
     
     return intraset_dd_dict
 
 def get_interset_dd_dict(extracted_features_a: Dict[str, np.ndarray], extracted_features_b: Dict[str, np.ndarray]) -> Dict[str, DistanceData]:
     """
-    TODO: Docstring
+    Calculates the interset distance matrix for each feature in the each of the extracted_features dictionaries.
+
     TODO: Use tqdm
     """
 
@@ -69,7 +69,7 @@ def __get_hvo_features(hvo_sequence: HVO_Sequence, features_to_extract):
 
 def __get_eval_hvo_features(hvo_sequence: HVO_Sequence):
     lmh_sync_info = hvo_sequence.get_low_mid_hi_syncopation_info()
-    # ac_features = hvo_sequence.get_velocity_autocorrelation_features()   
+    ac_features = hvo_sequence.get_velocity_autocorrelation_features()
     features = {
         NUM_INSTRUMENTS_KEY : hvo_sequence.get_number_of_active_voices(),
         TOTAL_STEP_DENSITY_KEY : hvo_sequence.get_total_step_density(),
@@ -86,10 +86,10 @@ def __get_eval_hvo_features(hvo_sequence: HVO_Sequence):
         COMPLEXITY_KEY : hvo_sequence.get_total_complexity(),
         LAIDBACKNESS_KEY : hvo_sequence.laidbackness(),
         TIMING_ACCURACY_KEY : hvo_sequence.get_timing_accuracy(),
-        # "auto_corr_skew" : ac_features["skewness"],
-        # "auto_corr_max" : ac_features["max"],
-        # "auto_corr_centroid" : ac_features["centroid"],
-        # "auto_corr_harmonicity" : ac_features["harmonicity"]
+        AUTO_CORR_SKEW_KEY : ac_features["skewness"],
+        AUTO_CORR_MAX_KEY : ac_features["max"],
+        AUTO_CORR_CENTROID_KEY : ac_features["centroid"],
+        AUTO_CORR_HARMONICITY_KEY : ac_features["harmonicity"]
     }
 
     return features

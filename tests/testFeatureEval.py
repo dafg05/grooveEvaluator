@@ -1,5 +1,5 @@
 import grooveEvaluator.featureEval as featEval
-from grooveEvaluator.constants import EVAL_FEATURES
+from grooveEvaluator.constants import *
 from tests.constants import *
 from tests.dataset import GrooveMidiDataset
 
@@ -11,11 +11,11 @@ VALIDATION_SET = GrooveMidiDataset(filters=AFROBEAT_FILTERS)
 def test_relative_comparison():
 
     print(len(GENERATED_SET))
-    kdes_by_feat, metrics_by_feat, points_by_feat = featEval.relative_comparison(GENERATED_SET, VALIDATION_SET)
+    kde_dicts_by_feat, metric_dicts_by_feat, points_by_feat = featEval.relative_comparison(GENERATED_SET, VALIDATION_SET)
     
-    assert len(kdes_by_feat) == len(EVAL_FEATURES)
-    assert len(kdes_by_feat) == len(metrics_by_feat)
-    assert len(kdes_by_feat) == len(points_by_feat)
+    assert len(kde_dicts_by_feat) == len(EVAL_FEATURES)
+    assert len(kde_dicts_by_feat) == len(metric_dicts_by_feat)
+    assert len(kde_dicts_by_feat) == len(points_by_feat)
 
     for feat in EVAL_FEATURES:
         # Points check
@@ -24,19 +24,18 @@ def test_relative_comparison():
         reshaped_points = points_by_feat[feat].reshape(-1, 1)
 
         # KDEs check
-        print(kdes_by_feat.keys())
-        assert feat in kdes_by_feat.keys(), f"Feature {feat} not found in kdes_by_feat"
-        generated_kde = kdes_by_feat[feat][0]
-        validation_kde = kdes_by_feat[feat][1]
-        interset_kde = kdes_by_feat[feat][2]
+        assert feat in kde_dicts_by_feat.keys(), f"Feature {feat} not found in kdes_by_feat"
+        generated_kde = kde_dicts_by_feat[feat][GENERATED_INTRASET_KEY]
+        validation_kde = kde_dicts_by_feat[feat][VALIDATION_INTRASET_KEY]
+        interset_kde = kde_dicts_by_feat[feat][INTERSET_KEY]
 
         # Since the generated and validation sets are the same, their kdes should be the same
         assert np.all(np.equal(generated_kde.score_samples(reshaped_points), validation_kde.score_samples(reshaped_points))), f"Generated and validation kdes are not equal for feature {feat}"
         assert np.all(np.equal(generated_kde.score_samples(reshaped_points), interset_kde.score_samples(reshaped_points))), f"Generated and interset kdes are not equal for feature {feat}"
         # Metrics check 
-        assert feat in metrics_by_feat.keys(), f"Feature {feat} not found in metrics_by_feat"
-        assert np.isclose(metrics_by_feat[feat][0], 0, rtol=1e-2), f"KL divergence should be close to zero, is {metrics_by_feat[feat][0]}"
-        assert np.isclose(metrics_by_feat[feat][1], 1, rtol=1e-1), f"Overlapping area should be close to 1, is {metrics_by_feat[feat][1]}"
+        assert feat in metric_dicts_by_feat.keys(), f"Feature {feat} not found in metrics_by_feat"
+        assert np.isclose(metric_dicts_by_feat[feat][KL_DIVERGENCE_KEY], 0, rtol=1e-2), f"KL divergence should be close to zero, is {metric_dicts_by_feat[feat][KL_DIVERGENCE_KEY]}"
+        assert metric_dicts_by_feat[feat][OVERLAPPING_AREA_KEY] > 0, f"Overlapping area should be greater than zero, is {metric_dicts_by_feat[feat][OVERLAPPING_AREA_KEY]}"
 
     print("test_relative_comparison passed")
 

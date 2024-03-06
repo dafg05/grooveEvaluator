@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.special as spsp
 from sklearn.neighbors import KernelDensity
 from grooveEvaluator.distanceData import DistanceData
 from typing import List
@@ -33,12 +34,11 @@ def kl_divergence(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndarray
     kde_b - KDE of second pdf
     points - points at which to evaluate the divergence
 
-    TODO: Is there a bug? See tester
+    TODO: Test me
     TODO: Cite me
     """
-
     points = points.reshape(-1, 1)
-
+    
     log_p = kde_a.score_samples(points)
     log_q = kde_b.score_samples(points)
 
@@ -49,9 +49,8 @@ def overlapping_area(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndar
     Use trapezoidal rule to estimate the overlapping area between two KDEs at a set of points.
     Source: https://stackoverflow.com/questions/69570238/is-there-a-way-in-python-to-calculate-the-overlapping-area-between-multiple-curv
 
-    TODO: Test me properly
+    TODO: Test me
     TODO: Cite me properly
-    TODO: Is this too numerically unstable?
     """
 
     reshaped_points = points.reshape(-1, 1)

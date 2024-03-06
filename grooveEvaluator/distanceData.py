@@ -3,8 +3,7 @@ import numpy as np
 
 class DistanceData:
     """
-    TODO: Docstring
-    TODO: Might need to get rid of the whole is_intraset thing, even though there is redundant data.
+    Class to hold feature distance data. Initialized with a distance matrix and a boolean indicating if the distance matrix is intraset or interset.
     """
     def __init__(self, distance_matrix, is_intraset):
         self.distance_matrix = distance_matrix
@@ -14,14 +13,7 @@ class DistanceData:
         self.kde = self.__kde_from_distances()
     
     def __flattened_relevant_distances(self):
-        if self.is_intraset:
-            # if intraset, we only need the upper triangle distances, as 
-            # the main diagonal is all zeroes and the matrix is symmetrical
-            flattened_distances = self.distance_matrix[np.triu_indices_from(self.distance_matrix, k=1)]
-        else:
-            # if interset, we need all distances
-            flattened_distances = self.distance_matrix.flatten()
-        return flattened_distances
+        return self.distance_matrix.flatten()
     
     def __kde_from_distances(self):
         reshaped_distances = self.flattened_distances.reshape(-1, 1)
