@@ -5,9 +5,30 @@ from grooveEvaluator.constants import *
 import grooveEvaluator.featureExtractor as featExt
 import grooveEvaluator.utils as utils
 
+from typing import Dict
 from tqdm import tqdm
 
-def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, num_points=1000, padding_factor=0.05, use_tqdm = True):
+GENERATED_INTRASET_KEY = "generated_intraset"
+VALIDATION_INTRASET_KEY = "validation_intraset"
+INTERSET_KEY = "interset"
+
+class ComparisonResult:
+    """
+    Holds the results of a relative comparison between two hvo sets. For each feature, 
+    it computes the kl_divergence and overlapping_area between 
+    the pdf of the generated intraset distances and the pdf of the interset distances.
+    """
+
+    def __init__(self, kl_divergence, overlapping_area, kde_dict, points):
+        self.kl_divergence = kl_divergence
+        self.overlapping_area = overlapping_area
+        self.kde_dict = kde_dict
+        self.points = points
+    
+    def __str__(self):
+        return f"kl_divergence: {self.kl_divergence}, overlapping_area: {self.overlapping_area}, kde_dict: {self.kde_dict}, points: {self.points}"
+
+def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, num_points=1000, padding_factor=0.05, use_tqdm = True) -> Dict[str, ComparisonResult]:
     """
     Runs a relative comparison between two hvo sets. For each feature, it computes the kl_divergence and overlapping_area between the pdf of the generated intraset distances and the pdf of the interset distances.
     Returns the kdes for each set and the interset, the points used to evaluate the kdes, and the kl_divergence and overlapping_area.
@@ -18,9 +39,7 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
     :param num_points: number of points to be used to evaluate the kdes and metrics
     :param padding_factor: factor to be used to pad the range of the kdes
 
-    :return kde_dicts_by_feat: dict where the keys are the features and the values are dicts with the kdes for the generated intraset, validation intraset and interset
-    :return points_by_feat: dict where values are the points used to evaluate the kdes and metrics
-    :return metric_dicts_by_feat: dict where values are the kl_divergence and overlapping_area
+    :return: dictionary with the comparison results for each feature
 
     TODO: There seems to be some weirdness with the computation of the kdes and metrics. Talk to Matteo about it.
     """
@@ -38,11 +57,10 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
 
     interset_dd_dict = featExt.get_interset_dd_dict(generated_features, validation_features)
 
-    kde_dicts_by_feat = {feature: {} for feature in features_to_extract}
-    metric_dicts_by_feat = {feature: {} for feature in features_to_extract}
-    points_by_feat = {feature: np.array([]) for feature in features_to_extract}
+    comparison_results_by_feat = {feature: None for feature in features_to_extract}
 
-    for feature in tqdm(features_to_extract, desc="Computing relative comparison metrics"):
+    iterable = tqdm(features_to_extract, desc="Computing relative comparison metrics") if use_tqdm else features_to_extract
+    for feature in iterable:
         # compute kl_divergence and overlapping_area for each feature
         generation_dd = generated_intraset_dd_dict[feature]
         validation_dd = validation_intraset_dd_dict[feature]
@@ -60,13 +78,6 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
             INTERSET_KEY: interset_dd.kde
         }
 
-        metrics_dict = {
-            KL_DIVERGENCE_KEY: kl_d,
-            OVERLAPPING_AREA_KEY: oa
-        }
+        comparison_results_by_feat[feature] = ComparisonResult(kl_d, oa, kde_dict, points)
 
-        kde_dicts_by_feat[feature] = kde_dict
-        metric_dicts_by_feat[feature] = metrics_dict
-        points_by_feat[feature] = np.append(points_by_feat[feature], points)
-
-    return kde_dicts_by_feat, metric_dicts_by_feat, points_by_feat
+    return comparison_results_by_feat

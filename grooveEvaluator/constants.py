@@ -39,10 +39,3 @@ EVAL_FEATURES = [
     AUTO_CORR_CENTROID_KEY,
     AUTO_CORR_HARMONICITY_KEY
 ]
-
-GENERATED_INTRASET_KEY = "generated_intraset"
-VALIDATION_INTRASET_KEY = "validation_intraset"
-INTERSET_KEY = "interset"
-
-KL_DIVERGENCE_KEY = "kl_divergence"
-OVERLAPPING_AREA_KEY = "overlapping_area"
