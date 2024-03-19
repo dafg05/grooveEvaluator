@@ -42,7 +42,12 @@ def kl_divergence(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndarray
     log_p = kde_a.score_samples(points)
     log_q = kde_b.score_samples(points)
 
-    return np.sum(np.exp(log_p) * (log_p - log_q))
+
+    kl_d = np.sum(np.exp(log_p) * (log_p - log_q))
+    
+    assert (kl_d >= 0)
+
+    return kl_d
 
 def overlapping_area(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndarray):
     """
@@ -63,6 +68,9 @@ def overlapping_area(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndar
 
     min_dens = np.minimum(dens_a, dens_b)
     overlapping_area = np.trapz(min_dens, points)
+
+    assert (overlapping_area >= 0)
+    assert (overlapping_area <= 1)
 
     return overlapping_area
 

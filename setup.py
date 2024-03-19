@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='grooveEvaluator',
-    version='0.1.2',
+    version='0.1.3',
     author='Daniel Flores',
     description="",
     long_description=open('README.md').read(),
