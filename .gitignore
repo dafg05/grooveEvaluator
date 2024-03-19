@@ -5,4 +5,5 @@ venv
 
 grooveEvaluator/__pycache__
 tests/__pycache__
+tests/out/*
 ```
