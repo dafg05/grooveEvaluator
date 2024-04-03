@@ -33,19 +33,14 @@ def kl_divergence(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndarray
     kde_a - KDE of first pdf
     kde_b - KDE of second pdf
     points - points at which to evaluate the divergence
-
-    TODO: Test me
-    TODO: Cite me
     """
-    points = points.reshape(-1, 1)
+    reshaped_points = points.reshape(-1, 1)
     
-    log_p = kde_a.score_samples(points)
-    log_q = kde_b.score_samples(points)
+    log_p = kde_a.score_samples(reshaped_points)
+    log_q = kde_b.score_samples(reshaped_points)
 
-
-    kl_d = np.sum(np.exp(log_p) * (log_p - log_q))
-    
-    assert (kl_d >= 0)
+    to_integrate = np.exp(log_p) * (log_p - log_q)
+    kl_d = np.trapz(to_integrate, points)
 
     return kl_d
 
@@ -53,9 +48,6 @@ def overlapping_area(kde_a: KernelDensity, kde_b: KernelDensity, points: np.ndar
     """
     Use trapezoidal rule to estimate the overlapping area between two KDEs at a set of points.
     Source: https://stackoverflow.com/questions/69570238/is-there-a-way-in-python-to-calculate-the-overlapping-area-between-multiple-curv
-
-    TODO: Test me
-    TODO: Cite me properly
     """
 
     reshaped_points = points.reshape(-1, 1)
