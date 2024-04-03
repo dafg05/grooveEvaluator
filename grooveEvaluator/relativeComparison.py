@@ -40,8 +40,6 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
     :param padding_factor: factor to be used to pad the range of the kdes
 
     :return: dictionary with the comparison results for each feature
-
-    TODO: There seems to be some weirdness with the computation of the kdes and metrics. Talk to Matteo about it.
     """
 
     if features_to_extract != EVAL_FEATURES:

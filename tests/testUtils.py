@@ -4,6 +4,7 @@ from grooveEvaluator.distanceData import DistanceData
 from grooveEvaluator import utils
 from unittest.mock import MagicMock
 from sklearn.neighbors import KernelDensity
+from scipy.stats import norm
 
 FEAT_VALUES_A = np.array([1, 2, 3, 4])
 FEAT_VALUES_B = np.array([5, 6, 7, 8])
@@ -69,24 +70,30 @@ def test_kl_divergence_normal_distributions():
     print('test_kl_divergence_normal_distributions passed')
 
 def test_overlapping_area():
-    """
-    TODO: Make this test more robust
-    """
     np.random.seed(100)
 
-    data_a = np.random.normal(0, 1, 1000)
-    data_b = np.random.normal(0, 2, 1000)
+    mean_1, mean_2 = 1, 3
+    std_1, std_2 = 1, 1
+    intersection = (1+3)/2
+
+    data_a = np.random.normal(mean_1, std_1, 1000)
+    data_b = np.random.normal(mean_2, std_2, 1000)
     
     kde_a = KernelDensity(kernel='gaussian', bandwidth='scott').fit(data_a.reshape(-1, 1))
     kde_b = KernelDensity(kernel='gaussian', bandwidth='scott').fit(data_b.reshape(-1, 1))
 
     # min and max of points are more than 3 standard deviations away from the mean for both distributions
-    points = np.linspace(-10, 10, 1000)
+    points = np.linspace(-10, 10, 10000)
 
-    overlapping_area = utils.overlapping_area(kde_a, kde_b, points)
-    print("Overlapping Area: ", overlapping_area)
+    expected_oa = norm.cdf(intersection, mean_2, std_2) + (1 - norm.cdf(intersection, mean_1, std_1))
+    actual_oa = utils.overlapping_area(kde_a, kde_b, points)
+    assert np.isclose(expected_oa, actual_oa, rtol=5e-1), f"Expected overlapping area: {expected_oa}; Actual overlapping area: {actual_oa}"
+    print("Expected Overlapping Area: ", expected_oa)
+    print("Actual Overlapping Area: ", actual_oa)
+    print('test_overlapping_area passed')
 
 def test_evaluation_points():
+
     dd_a = MagicMock(DistanceData)
     dd_a.flattened_distances = np.array([7,8,9,10])
     dd_b = MagicMock(DistanceData)
