@@ -41,7 +41,7 @@ def get_intraset_dd_dict(extracted_features: Dict[str, np.ndarray], use_tqdm=Tru
         try:
             intraset_dd_dict[feat_name] = DistanceData(distance_matrix, is_intraset=True)
         except Exception as e:
-            print(f"Error creating DistanceData for {feat_name}: {e}")
+            print(f"Error creating Intraset DistanceData for {feat_name}: {e}")
     
     return intraset_dd_dict
 
@@ -60,7 +60,10 @@ def get_interset_dd_dict(extracted_features_a: Dict[str, np.ndarray], extracted_
         # Get the values in second set corresponding to feature
         feat_values_b = extracted_features_b[feat_name]
         distance_matrix = utils.get_interset_distance_matrix(feat_values_a, feat_values_b)
-        interset_dd_dict[feat_name] = DistanceData(distance_matrix, is_intraset=False)
+        try:
+            interset_dd_dict[feat_name] = DistanceData(distance_matrix, is_intraset=False)
+        except Exception as e:
+            print(f"Error creating Interset DistanceData for {feat_name}: {e}")
     
     return interset_dd_dict
 
