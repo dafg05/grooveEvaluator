@@ -37,8 +37,11 @@ def get_intraset_dd_dict(extracted_features: Dict[str, np.ndarray], use_tqdm=Tru
     """
     intraset_dd_dict = {}
     for feat_name, feat_values in extracted_features.items():
-        distance_matirx = utils.get_intraset_distance_matrix(feat_values)
-        intraset_dd_dict[feat_name] = DistanceData(distance_matirx, is_intraset=True)
+        distance_matrix = utils.get_intraset_distance_matrix(feat_values)
+        try:
+            intraset_dd_dict[feat_name] = DistanceData(distance_matrix, is_intraset=True)
+        except Exception as e:
+            print(f"Error creating DistanceData for {feat_name}: {e}")
     
     return intraset_dd_dict
 
