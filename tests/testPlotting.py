@@ -12,12 +12,20 @@ POINTS = np.linspace(-5, 5, 1000)
 
 OUT_DIR = Path("tests/out")
 
-COMPARISON_RESULTS = {
+COMPARISON_RESULTS_1 = {
     "feature1": ComparisonResult(0.1, 0.2, None, None),
     "feature2": ComparisonResult(0.3, 0.4, None, None),
     "feature3": ComparisonResult(0.5, 0.6, None, None),
     "feature4": ComparisonResult(0.7, 0.8, None, None),
     "feature5": ComparisonResult(0.9, 0.1, None, None),
+}
+
+COMPARISON_RESULTS_2 = {
+    "feature1": ComparisonResult(0.2, 0.1, None, None),
+    "feature2": ComparisonResult(0.5, 0.42, None, None),
+    "feature3": ComparisonResult(0.4, 0.65, None, None),
+    "feature4": ComparisonResult(0.65, 0.6, None, None),
+    "feature5": ComparisonResult(0.5, 0.1, None, None),
 }
 
 KDE_DICT = {
@@ -27,7 +35,10 @@ KDE_DICT = {
 }
 
 def test_plot_distance_metrics():
-    plotting.plot_distance_metrics(COMPARISON_RESULTS, OUT_DIR, figname="Test Distance Metrics")
+    plotting.plot_distance_metrics(COMPARISON_RESULTS_1, OUT_DIR, figname="Test Distance Metrics")
+
+def test_plot_multiple_distance_metrics():
+    plotting.plot_multiple_distance_metrics(COMPARISON_RESULTS_1, COMPARISON_RESULTS_2,"set_1", "set_2", OUT_DIR, figname="Test Multiple Distance Metrics")
 
 def test_plot_kdes():
     points = POINTS.reshape(-1, 1)
@@ -36,4 +47,5 @@ def test_plot_kdes():
 
 if __name__ == "__main__":
     test_plot_distance_metrics()
+    test_plot_multiple_distance_metrics()
     test_plot_kdes()
