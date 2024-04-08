@@ -39,7 +39,7 @@ def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, f
     plt.savefig(out_dir / f"{figname}_plot.png", dpi=300, bbox_inches='tight')
     plt.close()
 
-def plot_multiple_distance_metrics(results_1: Dict[str, ComparisonResult], results_2: Dict[str, ComparisonResult], setname_1: str, setname2: str, out_dir: Path, figname: str = "Distance Metrics", x_limit: float=-1, colors: List[str] = None):
+def plot_multiple_distance_metrics(results_1: Dict[str, ComparisonResult], results_2: Dict[str, ComparisonResult], setname_1: str, setname2: str, out_dir: Path, figname: str = "Distance Metrics", x_right_limit: float=-1, colors: List[str] = None):
     features_1 = list(results_1.keys())
     kl_divergences_1 = [result.kl_divergence for result in results_1.values()]
     overlapping_areas_1 = [result.overlapping_area for result in results_1.values()]
@@ -51,8 +51,10 @@ def plot_multiple_distance_metrics(results_1: Dict[str, ComparisonResult], resul
     if not colors:
         # Using a more distinct color palette
         colors = plt.get_cmap('tab20').colors
-    if x_limit < 0:
-        x_limit = max(kl_divergences_1 + kl_divergences_2) + 0.01 * max(kl_divergences_1 + kl_divergences_2)
+    if x_right_limit < 0:
+        x_right_limit = max(kl_divergences_1 + kl_divergences_2) + 0.01 * max(kl_divergences_1 + kl_divergences_2)
+
+    y_bottom_limit = min(0, min(overlapping_areas_1 + overlapping_areas_2) - 0.01 * min(overlapping_areas_1 + overlapping_areas_2))
 
     plt.figure(figsize=(12, 8))
 
@@ -71,8 +73,8 @@ def plot_multiple_distance_metrics(results_1: Dict[str, ComparisonResult], resul
     plt.axhline(y=0, color='black', linewidth=0.5)
     plt.axvline(x=0, color='black', linewidth=0.5)
 
-    plt.xlim(left=0, right=x_limit)
-    plt.ylim(bottom=0, top=1.0)
+    plt.xlim(left=0, right=x_right_limit)
+    plt.ylim(bottom=y_bottom_limit, top=1.0)
 
     # Improve legend placement and ensure it's not cut off
     plt.legend(bbox_to_anchor=(1.04, 1), loc="upper left", title="Features", fontsize='small', markerscale=1)
