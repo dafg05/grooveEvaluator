@@ -45,16 +45,16 @@ def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, o
         colors = plt.get_cmap('tab20').colors
 
     plt.figure(figsize=(9, 5))
-    max_kl_divergence = 0
-    min_overlapping_area = 0
+    max_kl_divergence = float('-inf')
+    min_overlapping_area = float('inf')
 
     # Plot with specified markers
-    for i, (feature, result) in enumerate(results_1.items()):
-        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='v')  # Triangles for set 1
+    for i, (feature, result) in enumerate(results_2.items()):
+        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='o', label=feature)  # Circles for set 2
         max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
         min_overlapping_area = min(min_overlapping_area, result.overlapping_area)
-    for i, (feature, result) in enumerate(results_2.items()):
-        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='o')  # Circles for set 2
+    for i, (feature, result) in enumerate(results_1.items()):
+        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='v', label=feature)  # Triangles for set 1
         max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
         min_overlapping_area = min(min_overlapping_area, result.overlapping_area)
 
@@ -62,21 +62,21 @@ def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, o
     if x_right_limit < 0:
         x_right_limit = max_kl_divergence + 0.1 * max_kl_divergence
     
-    y_bottom_limit = min(0, min_overlapping_area - 0.1 * min_overlapping_area)
+    y_bottom_limit = max(0, min_overlapping_area - 0.1 * min_overlapping_area)
 
     plt.xlim(left=0, right=x_right_limit)
     plt.ylim(bottom=y_bottom_limit, top=1.0)
 
     # Legend for colors (features)
     legend_elements = [plt.Line2D([0], [0], color=color, marker='s', linestyle='', markersize=10) for color in colors]
-    plt.legend(legend_elements, [f'Feature {i+1}' for i in range(len(colors))], title="Features", title_fontproperties={'weight':'bold'},bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(legend_elements, [feature for feature in results_1.keys()], title="Features", title_fontproperties={'weight':'bold'},bbox_to_anchor=(1.05, 1), loc='upper left')
 
     plt.xlabel('KL-Divergence', fontweight='bold')
     plt.ylabel('Overlapping Area', fontweight='bold')
-    plt.title(figname, fontweight='bold', fontsize = 14)
+    plt.title(figname, fontweight='bold', fontsize = 12)
 
    # Annotations for set markers
-    plt.text(0.5, -0.2, f'"{setname_1}" ▼ | "{setname_2}" ●', ha='center', va='center', 
+    plt.text(0.5, -0.2, f'{setname_1} ▼ | {setname_2} ●', ha='center', va='center', 
              transform=plt.gca().transAxes,
              bbox=dict(facecolor='white', alpha=0.5, edgecolor='black', boxstyle='round,pad=0.5'))
     
