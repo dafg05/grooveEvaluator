@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.lines import Line2D
 import numpy as np
 
 from pathlib import Path
@@ -81,6 +82,52 @@ def plot_multiple_distance_metrics(results_1: Dict[str, ComparisonResult], resul
     plt.tight_layout(rect=[0, 0, 0.85, 1])  # Adjust the rect layout to make room for the legend
 
     plt.savefig(out_dir / f"{figname}_plot.png", dpi=300, bbox_inches='tight')
+    plt.close()
+
+def plot_multiple_distance_metrics_adjusted(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, colors=None):
+    if not colors:
+        colors = plt.get_cmap('tab10').colors
+
+    plt.figure(figsize=(9, 5))
+    max_kl_divergence = 0
+    min_overlapping_area = 0
+
+    marker_size = 100
+    # Plot with specified markers
+    for i, (feature, result) in enumerate(results_1.items()):
+        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='v')  # Triangles for set 1
+        max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
+        min_overlapping_area = min(min_overlapping_area, result.overlapping_area)
+    for i, (feature, result) in enumerate(results_2.items()):
+        plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='o')  # Circles for set 2
+        max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
+        min_overlapping_area = min(min_overlapping_area, result.overlapping_area)
+
+    # Adjusting limits
+    if x_right_limit < 0:
+        x_right_limit = max_kl_divergence + 0.1 * max_kl_divergence
+    
+    y_bottom_limit = min(0, min_overlapping_area - 0.1 * min_overlapping_area)
+
+    plt.xlim(left=0, right=x_right_limit)
+    plt.ylim(bottom=y_bottom_limit, top=1.0)
+
+    # Legend for colors (features)
+    legend_elements = [plt.Line2D([0], [0], color=color, marker='s', linestyle='', markersize=10) for color in colors]
+    plt.legend(legend_elements, [f'Feature {i+1}' for i in range(len(colors))], title="Features", bbox_to_anchor=(1.05, 1), loc='upper left')
+
+    plt.xlabel('KL-Divergence', fontweight='bold')
+    plt.ylabel('Overlapping Area', fontweight='bold')
+    plt.title(figname, fontweight='bold', fontsize = 14)  # Increase padding to ensure space for the annotation
+
+   # Annotations for set markers
+    plt.text(0.5, -0.2, f'"{setname_1}" ▼ | "{setname_2}" ●', ha='center', va='center', 
+             transform=plt.gca().transAxes,
+             bbox=dict(facecolor='white', alpha=0.5, edgecolor='black', boxstyle='round,pad=0.5'))
+    
+    plt.tight_layout(rect=[0, 0.05, 0.75, 1])
+
+    plt.savefig(out_dir / f"{figname}_plot.png", dpi=300)
     plt.close()
 
 def plot_kdes(kde_dict: Dict[str, KernelDensity], points: np.ndarray, out_dir: Path, figname: str = "KDEs", colors: list = None):

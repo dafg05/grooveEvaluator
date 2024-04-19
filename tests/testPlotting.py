@@ -40,6 +40,9 @@ def test_plot_distance_metrics():
 def test_plot_multiple_distance_metrics():
     plotting.plot_multiple_distance_metrics(COMPARISON_RESULTS_1, COMPARISON_RESULTS_2,"set_1", "set_2", OUT_DIR, figname="Test Multiple Distance Metrics")
 
+def test_plot_multiple_distance_metrics_adjusted():
+    plotting.plot_multiple_distance_metrics_adjusted(COMPARISON_RESULTS_1, COMPARISON_RESULTS_2,"set_1", "set_2", OUT_DIR, figname="Adjusted")
+
 def test_plot_kdes():
     points = POINTS.reshape(-1, 1)
     plotting.plot_kdes(KDE_DICT, points, OUT_DIR, figname="Test KDEs")
@@ -49,3 +52,4 @@ if __name__ == "__main__":
     test_plot_distance_metrics()
     test_plot_multiple_distance_metrics()
     test_plot_kdes()
+    test_plot_multiple_distance_metrics_adjusted()
