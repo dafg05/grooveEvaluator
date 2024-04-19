@@ -42,7 +42,7 @@ def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, f
 
 def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, colors=None):
     if not colors:
-        colors = plt.get_cmap('tab10').colors
+        colors = plt.get_cmap('tab20').colors
 
     plt.figure(figsize=(9, 5))
     max_kl_divergence = 0
@@ -69,7 +69,7 @@ def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, o
 
     # Legend for colors (features)
     legend_elements = [plt.Line2D([0], [0], color=color, marker='s', linestyle='', markersize=10) for color in colors]
-    plt.legend(legend_elements, [f'Feature {i+1}' for i in range(len(colors))], title="Features", bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.legend(legend_elements, [f'Feature {i+1}' for i in range(len(colors))], title="Features", title_fontproperties={'weight':'bold'},bbox_to_anchor=(1.05, 1), loc='upper left')
 
     plt.xlabel('KL-Divergence', fontweight='bold')
     plt.ylabel('Overlapping Area', fontweight='bold')
