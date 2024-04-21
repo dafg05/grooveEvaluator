@@ -66,9 +66,9 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
 
         points = utils.evaluation_points([generation_dd, validation_dd, interset_dd], num_points, padding_factor)
         
-        # compute comparison metrics between the generated intraset pdf and the interset pdf
-        kl_d = utils.kl_divergence(generation_dd.kde, interset_dd.kde, points)
-        oa = utils.overlapping_area(generation_dd.kde, interset_dd.kde, points)
+        # compute comparison metrics between the validation intraset pdf and the interset pdf
+        kl_d = utils.kl_divergence(validation_dd.kde, interset_dd.kde, points)
+        oa = utils.overlapping_area(validation_dd.kde, interset_dd.kde, points)
 
         kde_dict = {
             GENERATED_INTRASET_KEY: generation_dd.kde,
