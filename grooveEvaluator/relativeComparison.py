@@ -30,7 +30,7 @@ class ComparisonResult:
 
 def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, num_points=1000, padding_factor=0.05, use_tqdm = True) -> Dict[str, ComparisonResult]:
     """
-    Runs a relative comparison between two hvo sets. For each feature, it computes the kl_divergence and overlapping_area between the pdf of the generated intraset distances and the pdf of the interset distances.
+    Runs a relative comparison between two hvo sets. For each feature, it computes the kl_divergence and overlapping_area between the pdf of the validation intraset distances and the pdf of the interset distances.
     Returns the kdes for each set and the interset, the points used to evaluate the kdes, and the kl_divergence and overlapping_area.
     
     :param generated_set: hvo set to be used as the generated set
