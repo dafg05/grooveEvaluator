@@ -8,9 +8,11 @@ from typing import Dict, List
 from sklearn.neighbors import KernelDensity
 from grooveEvaluator.relativeComparison import ComparisonResult
 
-def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, figname: str = "Distance Metrics", x_limit: float=-1, colors: list = None):
+def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, figname: str = "Distance Metrics", x_limit: float=-1, colors: list = None, non_negative_klds: bool = False):
     features = list(results.keys())
     kl_divergences = [result.kl_divergence for result in results.values()]
+    if non_negative_klds:
+        kl_divergences = [max(0, kl_divergence) for kl_divergence in kl_divergences]
     overlapping_areas = [result.overlapping_area for result in results.values()]
 
     if not colors:
@@ -40,7 +42,7 @@ def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, f
     plt.savefig(out_dir / f"{figname}_plot.png", dpi=300, bbox_inches='tight')
     plt.close()
 
-def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, colors=None):
+def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, colors=None, non_negative_klds=False):
     if not colors:
         colors = plt.get_cmap('tab20').colors
 
@@ -50,10 +52,14 @@ def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, o
 
     # Plot with specified markers
     for i, (feature, result) in enumerate(results_2.items()):
+        if non_negative_klds:
+            result.kl_divergence = max(0, result.kl_divergence)
         plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='o', label=feature)  # Circles for set 2
         max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
         min_overlapping_area = min(min_overlapping_area, result.overlapping_area)
     for i, (feature, result) in enumerate(results_1.items()):
+        if non_negative_klds:
+            result.kl_divergence = max(0, result.kl_divergence)
         plt.scatter(result.kl_divergence, result.overlapping_area, color=colors[i], marker='v', label=feature)  # Triangles for set 1
         max_kl_divergence = max(max_kl_divergence, result.kl_divergence)
         min_overlapping_area = min(min_overlapping_area, result.overlapping_area)

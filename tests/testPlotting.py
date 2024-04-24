@@ -23,9 +23,9 @@ COMPARISON_RESULTS_1 = {
 COMPARISON_RESULTS_2 = {
     "feature1": ComparisonResult(0.2, 0.1, None, None),
     "feature2": ComparisonResult(0.5, 0.42, None, None),
-    "feature3": ComparisonResult(0.4, 0.65, None, None),
+    "feature3": ComparisonResult(-40.0, 0.65, None, None),
     "feature4": ComparisonResult(0.65, 0.6, None, None),
-    "feature5": ComparisonResult(0.5, 0.1, None, None),
+    "feature5": ComparisonResult(-1.0, 0.5, None, None),
 }
 
 KDE_DICT = {
