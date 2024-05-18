@@ -49,6 +49,9 @@ def test_relative_comparison_simple():
     for feat in EVAL_FEATURES:
         comparison_result = comparison_results_by_feat[feat]
 
+        # Points check
+        assert len(comparison_result.points) == 1000, f"Expected 1000 points, got {len(comparison_result.points)}."
+
         # Metrics check 
         assert np.isclose(comparison_result.kl_divergence, 0, rtol=1e-2), f"KL divergence should be close to zero, is {comparison_result.kl_divergence}"
         assert comparison_result.overlapping_area > 0, f"Overlapping area should be greater than zero, is {comparison_result.overlapping_area}"
@@ -74,7 +77,7 @@ def test_relative_comparison_simple():
         assert np.isclose(generated_std, validation_std, rtol=1e-2), f"Generated and validation stds should be close, are {generated_std} and {validation_std}"
         assert np.isclose(generated_std, interset_std, rtol=1e-2), f"Generated and interset stds should be close, are {generated_std} and {interset_std}" 
 
-    print("test_relative_comparison_simple passed")
+    print("test_relative_comparison_simple passed!")
 
 
 if __name__ == "__main__":

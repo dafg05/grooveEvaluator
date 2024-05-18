@@ -35,10 +35,11 @@ class SimpleComparisonResult:
     """
     Like ComparisonResult, but stores mean + std instead of kdes.
     """
-    def __init__(self, kl_divergence, overlapping_area, stats_dict):
+    def __init__(self, kl_divergence, overlapping_area, stats_dict, points):
         self.kl_divergence = kl_divergence
         self.overlapping_area = overlapping_area
         self.stats_dict = stats_dict
+        self.points = points
 
 def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, simple=False, num_points=1000, padding_factor=0.05, use_tqdm = True) -> Dict[str, ComparisonResult]:
     """
@@ -98,7 +99,7 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
                     STD_KEY: interset_dd.std
                 }
             }
-            comparison_results_by_feat[feature] = SimpleComparisonResult(kl_d, oa, stats_dict)
+            comparison_results_by_feat[feature] = SimpleComparisonResult(kl_d, oa, stats_dict, points)
         else: 
             kde_dict = {
                 GENERATED_INTRASET_KEY: generation_dd.kde,
