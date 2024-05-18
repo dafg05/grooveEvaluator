@@ -9,10 +9,12 @@ class DistanceData:
         self.distance_matrix = distance_matrix
         self.is_intraset = is_intraset
         # TODO: if is_intraset, check if distance_matrix is symmetrical
-        self.flattened_distances = self.__flattened_relevant_distances()
+        self.flattened_distances = self.__flattened_distances()
+        self.mean = np.mean(self.flattened_distances)
+        self.std = np.std(self.flattened_distances)
         self.kde = self.__kde_from_distances()
     
-    def __flattened_relevant_distances(self):
+    def __flattened_distances(self):
         return self.distance_matrix.flatten()
     
     def __kde_from_distances(self):

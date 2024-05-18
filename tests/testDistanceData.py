@@ -12,8 +12,11 @@ def test_distance_data():
 
     assert np.array_equal(distance_data.distance_matrix, INTERSET_DISTANCE_MATRIX)
     assert np.array_equal(distance_data.flattened_distances, expected_flattened_distances)
+    assert np.isclose(distance_data.mean, 5, rtol=1e-2)
+    assert np.isclose(distance_data.std, 2.581988897, rtol=1e-2)
+
     assert not distance_data.is_intraset
-    print("test_distance_data_interset passed")
+    print("test_distance_data_interset passed!!")
 
 
 if __name__ == "__main__":

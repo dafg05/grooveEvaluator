@@ -12,6 +12,9 @@ GENERATED_INTRASET_KEY = "generated_intraset"
 VALIDATION_INTRASET_KEY = "validation_intraset"
 INTERSET_KEY = "interset"
 
+MEAN_KEY = "mean"
+STD_KEY = "std"
+
 class ComparisonResult:
     """
     Holds the results of a relative comparison between two hvo sets. For each feature, 
@@ -26,9 +29,18 @@ class ComparisonResult:
         self.points = points
     
     def __str__(self):
-        return f"kl_divergence: {self.kl_divergence}, overlapping_area: {self.overlapping_area}, kde_dict: {self.kde_dict}, points: {self.points}"
+        return f"kl_divergence: {self.kl_divergence}, overlapping_area: {self.overlapping_area}, kde_dict: {self.kde_dict}, stats_dict: {self.stats_dict}, points: {self.points}"
+    
+class SimpleComparisonResult:
+    """
+    Like ComparisonResult, but stores mean + std instead of kdes.
+    """
+    def __init__(self, kl_divergence, overlapping_area, stats_dict):
+        self.kl_divergence = kl_divergence
+        self.overlapping_area = overlapping_area
+        self.stats_dict = stats_dict
 
-def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, num_points=1000, padding_factor=0.05, use_tqdm = True) -> Dict[str, ComparisonResult]:
+def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_FEATURES, simple=False, num_points=1000, padding_factor=0.05, use_tqdm = True) -> Dict[str, ComparisonResult]:
     """
     Runs a relative comparison between two hvo sets. For each feature, it computes the kl_divergence and overlapping_area between the pdf of the validation intraset distances and the pdf of the interset distances.
     Returns the kdes for each set and the interset, the points used to evaluate the kdes, and the kl_divergence and overlapping_area.
@@ -36,6 +48,7 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
     :param generated_set: hvo set to be used as the generated set
     :param validation_set: hvo set to be used as the validation set
     :param features_to_extract: list of features to be extracted from the hvo sets
+    :param simple: if True, returns a dict of SimpleComparisonResult instead of ComparisonResult
     :param num_points: number of points to be used to evaluate the kdes and metrics
     :param padding_factor: factor to be used to pad the range of the kdes
 
@@ -70,12 +83,28 @@ def relative_comparison(generated_set, validation_set, features_to_extract=EVAL_
         kl_d = utils.kl_divergence(validation_dd.kde, interset_dd.kde, points)
         oa = utils.overlapping_area(validation_dd.kde, interset_dd.kde, points)
 
-        kde_dict = {
-            GENERATED_INTRASET_KEY: generation_dd.kde,
-            VALIDATION_INTRASET_KEY: validation_dd.kde,
-            INTERSET_KEY: interset_dd.kde
-        }
-
-        comparison_results_by_feat[feature] = ComparisonResult(kl_d, oa, kde_dict, points)
+        if simple:
+            stats_dict = {
+                GENERATED_INTRASET_KEY: {
+                    MEAN_KEY: generation_dd.mean,
+                    STD_KEY: generation_dd.std
+                },
+                VALIDATION_INTRASET_KEY: {
+                    MEAN_KEY: validation_dd.mean,
+                    STD_KEY: validation_dd.std
+                },
+                INTERSET_KEY: {
+                    MEAN_KEY: interset_dd.mean,
+                    STD_KEY: interset_dd.std
+                }
+            }
+            comparison_results_by_feat[feature] = SimpleComparisonResult(kl_d, oa, stats_dict)
+        else: 
+            kde_dict = {
+                GENERATED_INTRASET_KEY: generation_dd.kde,
+                VALIDATION_INTRASET_KEY: validation_dd.kde,
+                INTERSET_KEY: interset_dd.kde
+            }
+            comparison_results_by_feat[feature] = ComparisonResult(kl_d, oa, kde_dict, points)
 
     return comparison_results_by_feat

@@ -39,5 +39,44 @@ def test_relative_comparison():
 
     print("test_relative_comparison passed")
 
+
+def test_relative_comparison_simple():
+    print(len(GENERATED_SET))
+    comparison_results_by_feat = relative_comparison(GENERATED_SET, VALIDATION_SET, simple=True)
+    
+    assert len(comparison_results_by_feat) == len(EVAL_FEATURES), f"Expected {len(EVAL_FEATURES)} comparison results, got {len(comparison_results_by_feat)}"
+
+    for feat in EVAL_FEATURES:
+        comparison_result = comparison_results_by_feat[feat]
+
+        # Metrics check 
+        assert np.isclose(comparison_result.kl_divergence, 0, rtol=1e-2), f"KL divergence should be close to zero, is {comparison_result.kl_divergence}"
+        assert comparison_result.overlapping_area > 0, f"Overlapping area should be greater than zero, is {comparison_result.overlapping_area}"
+
+        # Stats check
+        stats_dict = comparison_result.stats_dict
+        
+        generated_stats = stats_dict[GENERATED_INTRASET_KEY]
+        validation_stats = stats_dict[VALIDATION_INTRASET_KEY]
+        interset_stats = stats_dict[INTERSET_KEY]
+
+        generated_mean = generated_stats[MEAN_KEY]
+        generated_std = generated_stats[STD_KEY]
+
+        validation_mean = validation_stats[MEAN_KEY]
+        validation_std = validation_stats[STD_KEY]
+
+        interset_mean = interset_stats[MEAN_KEY]
+        interset_std = interset_stats[STD_KEY]
+
+        assert np.isclose(generated_mean, validation_mean, rtol=1e-2), f"Generated and validation means should be close, are {generated_mean} and {validation_mean}"
+        assert np.isclose(generated_mean, interset_mean, rtol=1e-2), f"Generated and interset means should be close, are {generated_mean} and {interset_mean}"
+        assert np.isclose(generated_std, validation_std, rtol=1e-2), f"Generated and validation stds should be close, are {generated_std} and {validation_std}"
+        assert np.isclose(generated_std, interset_std, rtol=1e-2), f"Generated and interset stds should be close, are {generated_std} and {interset_std}" 
+
+    print("test_relative_comparison_simple passed")
+
+
 if __name__ == "__main__":
     test_relative_comparison()
+    test_relative_comparison_simple()
