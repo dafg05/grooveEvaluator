@@ -42,7 +42,7 @@ def plot_distance_metrics(results: Dict[str, ComparisonResult], out_dir: Path, f
     plt.savefig(out_dir / f"{figname}_plot.png", dpi=300, bbox_inches='tight')
     plt.close()
 
-def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, colors=None, non_negative_klds=False):
+def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, out_dir, figname="Distance Metrics", x_right_limit=-1, y_bottom_limit=-1,colors=None, non_negative_klds=False):
     if not colors:
         colors = plt.get_cmap('tab20').colors
 
@@ -68,7 +68,8 @@ def plot_multiple_distance_metrics(results_1, results_2, setname_1, setname_2, o
     if x_right_limit < 0:
         x_right_limit = max_kl_divergence + 0.1 * max_kl_divergence
     
-    y_bottom_limit = max(0, min_overlapping_area - 0.1 * min_overlapping_area)
+    if y_bottom_limit < 0:
+        y_bottom_limit = max(0, min_overlapping_area - 0.1 * min_overlapping_area)
 
     plt.xlim(left=0, right=x_right_limit)
     plt.ylim(bottom=y_bottom_limit, top=1.0)

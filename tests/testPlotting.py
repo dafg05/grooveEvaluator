@@ -38,7 +38,7 @@ def test_plot_distance_metrics():
     plotting.plot_distance_metrics(COMPARISON_RESULTS_1, OUT_DIR, figname="Test Distance Metrics")
 
 def test_plot_multiple_distance_metrics():
-    plotting.plot_multiple_distance_metrics(COMPARISON_RESULTS_1, COMPARISON_RESULTS_2,"set_1", "set_2", OUT_DIR, figname="Test Multiple Distance Metrics")
+    plotting.plot_multiple_distance_metrics(COMPARISON_RESULTS_1, COMPARISON_RESULTS_2,"set_1", "set_2", OUT_DIR, y_bottom_limit=0.7,figname="Test Multiple Distance Metrics")
 
 def test_plot_kdes():
     points = POINTS.reshape(-1, 1)
